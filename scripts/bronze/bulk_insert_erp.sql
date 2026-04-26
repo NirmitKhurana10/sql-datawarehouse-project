@@ -1,3 +1,17 @@
+/*
+====================================================================================
+Bulk Insert Script: Bulk Insert Bronze Tables for ERP data and log data in log table
+====================================================================================
+Script Purpose:
+    This script bulk inserts the data in tables in the 'bronze' schema, while 
+    truncating the existing data and adding the data as a fresh table.
+	  Run this script to re-write the Data structure of 'bronze' Tables.
+====================================================================================
+*/
+
+
+
+
 SET @batch_start = NOW();
 
 INSERT INTO og_bronze.etl_process_log (process_step, status_message, created_at)
@@ -8,7 +22,7 @@ VALUES ('Bronze Layer Data Ingestion: ERP Data', 'Bulk Insert', @batch_start);
 -- --------------------------------
 
 
-load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/Data-warehouse-project/exampleDatasets/source_erp/CUST_AZ12.csv'
+load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/sql-datawarehouse-project_me/datasets/source_erp/CUST_AZ12.csv'
 into table og_bronze.erp_cust_AZ12
 fields terminated by ','
 lines terminated by '\n'
@@ -18,7 +32,7 @@ ignore 1 lines;
 -- Load Loc Info
 -- --------------------------------
 
-load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/Data-warehouse-project/exampleDatasets/source_erp/LOC_A101.csv'
+load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/sql-datawarehouse-project_me/datasets/source_erp/LOC_A101.csv'
 into table og_bronze.erp_loc_A101
 fields terminated by ','
 lines terminated by '\n'
@@ -28,7 +42,7 @@ ignore 1 lines;
 -- Load Erp PRX Info
 -- --------------------------------
 
-load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/Data-warehouse-project/exampleDatasets/source_erp/PX_CAT_G1V2.csv'
+load data local infile '/Users/nirmitkhurana/Desktop/Nirmit Docs/Projects/SQL/sql-datawarehouse-project_me/datasets/source_erp/PX_CAT_G1V2.csv'
 into table og_bronze.erp_prx_cat_G1V2
 fields terminated by ','
 lines terminated by '\n'
