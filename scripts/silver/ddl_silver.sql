@@ -45,9 +45,9 @@ create table og_silver.crm_sales_details(
 	sls_ord_num VARCHAR(100),
 	sls_prd_key VARCHAR(100),
 	sls_cust_id INT,
-	sls_order_dt INT,
-	sls_ship_dt INT,
-	sls_due_dt INT,
+	sls_order_dt DATE,
+	sls_ship_dt DATE,
+	sls_due_dt DATE,
 	sls_sales INT,
 	sls_quantity INT,
 	sls_price INT,
@@ -94,7 +94,7 @@ CREATE TABLE IF NOT EXISTS og_silver.etl_process_log (
     log_id INT AUTO_INCREMENT PRIMARY KEY,
     process_step VARCHAR(100),
     status_message VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(),
     end_at TIMESTAMP NULL,
     duration_of_script_execution INT COMMENT 'Duration in seconds'
 );
