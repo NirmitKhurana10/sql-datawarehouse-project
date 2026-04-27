@@ -273,3 +273,43 @@ select
 from og_bronze.erp_loc_A101 ela  --  finds the hexcode and length of every distinct country value.
 
 
+
+
+
+-- ===================================== erp_prx_cat_G1V2 ===========================================
+
+
+
+-- The Id column here we have already derived the same in "crm_prd_info". So we can skip checking it. 
+
+
+-- Check for unwanted spaces and nulls
+-- Expectation: No Result
+
+Select 
+	* 
+FROM og_bronze.erp_prx_cat_G1V2 epcgv 
+where epcgv.cat != TRIM(epcgv.cat) or  epcgv.sub_cat  != TRIM(epcgv.sub_cat) or  epcgv.MAINTENANCE != TRIM(epcgv.MAINTENANCE )
+
+
+-- Check for Data Standardisation and Consistency
+
+select 
+	distinct epcgv.sub_cat  
+FROM og_bronze.erp_prx_cat_G1V2 epcgv 
+
+
+select 
+	distinct epcgv.cat  
+FROM og_bronze.erp_prx_cat_G1V2 epcgv 
+
+
+select 
+	distinct epcgv.MAINTENANCE   
+FROM og_bronze.erp_prx_cat_G1V2 epcgv 
+
+select 
+	 distinct epcgv.MAINTENANCE, HEX(epcgv.MAINTENANCE), length(epcgv.MAINTENANCE)
+from og_bronze.erp_prx_cat_G1V2 epcgv   --  finds the hexcode and length of every distinct MAINTENANCE value.
+
+
