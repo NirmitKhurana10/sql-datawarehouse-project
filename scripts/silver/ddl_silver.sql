@@ -29,6 +29,7 @@ drop table if exists og_silver.crm_prd_info;
 create table og_silver.crm_prd_info(
 
 	prd_id INT,
+	cat_id VARCHAR(100),
 	prd_key VARCHAR(100),
 	prd_nm VARCHAR(100),
 	prd_cost INT,
