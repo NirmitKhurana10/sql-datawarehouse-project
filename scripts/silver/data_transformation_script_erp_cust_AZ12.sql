@@ -1,3 +1,7 @@
+
+truncate table og_silver.erp_cust_AZ12;
+
+
 INSERT INTO og_silver.erp_cust_AZ12
 (
 	cust_id, 

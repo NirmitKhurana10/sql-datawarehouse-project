@@ -1,3 +1,5 @@
+truncate table og_silver.crm_prd_info;
+
 insert into og_silver.crm_prd_info (
 	prd_id,
 	cat_id,

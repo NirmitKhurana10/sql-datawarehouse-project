@@ -1,3 +1,6 @@
+
+truncate table og_silver.crm_sales_details;
+
 INSERT INTO og_silver.crm_sales_details
 (
 	sls_ord_num, 
@@ -25,7 +28,7 @@ SELECT
 		else CAST(CAST(sls_due_dt AS CHAR) AS DATE) -- typecasting DAte from int to char to date (as Mysql does not allow direct from int to DATE)
 		end as sls_due_dt, 
 	case when sls_sales <= 0 or sls_sales is null or sls_sales != sls_quantity * ABS(sls_price)
-		then sls_sales = sls_quantity * ABS(sls_price)
+		then sls_quantity * ABS(sls_price)
 		else sls_sales
 	END AS sls_sales, -- recalculating sales as per business rules.
 	sls_quantity,

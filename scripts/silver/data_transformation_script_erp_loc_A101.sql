@@ -1,3 +1,7 @@
+
+truncate table og_silver.erp_loc_A101;
+
+
 INSERT INTO og_silver.erp_loc_A101
 (
 	cust_id, 

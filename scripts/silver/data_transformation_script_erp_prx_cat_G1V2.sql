@@ -1,3 +1,8 @@
+
+truncate table og_silver.erp_prx_cat_G1V2;
+
+
+
 INSERT INTO og_silver.erp_prx_cat_G1V2
 (
 	id, 
