@@ -261,3 +261,15 @@ from og_bronze.erp_cust_AZ12 eca
 
 SELECT DISTINCT gender, HEX(gender), LENGTH(gender) 
 FROM og_bronze.erp_cust_AZ12; --  finds the hexcode and length of every distinct gender value.
+
+
+
+-- ===================================== erp_cust_locA101 ===========================================
+
+
+
+select 
+	 distinct ela.c_entry, HEX(ela.c_entry), length(ela.c_entry)
+from og_bronze.erp_loc_A101 ela  --  finds the hexcode and length of every distinct country value.
+
+
