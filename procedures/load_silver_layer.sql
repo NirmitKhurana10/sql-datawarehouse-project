@@ -1,8 +1,9 @@
-CREATE PROCEDURE og_silver.sp_load_silver_layer()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `og_silver`.`sp_load_silver_layer`()
 BEGIN
     -- Error handling variables
     DECLARE v_batch_start DATETIME;
     DECLARE v_batch_end DATETIME;
+    DECLARE v_step_start DATETIME;
     DECLARE v_duration INT;
     DECLARE v_error_message VARCHAR(255);
     DECLARE EXIT HANDLER FOR SQLEXCEPTION
@@ -16,13 +17,15 @@ BEGIN
     SET v_batch_start = NOW();
     SELECT '>> Silver Layer Load Started...' AS status;
 
-    -- --------------------------------
+    -- ================================
     -- crm_cust_info
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.crm_cust_info...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: crm_cust_info', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.crm_cust_info;
 
-    SELECT '>> Inserting into og_silver.crm_cust_info...' AS status;
     INSERT INTO og_silver.crm_cust_info (
         cst_id, cst_key, cst_create_date, cst_firstname,
         cst_lastname, cst_marital_status, cst_gndr
@@ -47,15 +50,19 @@ BEGIN
         FROM og_bronze.crm_cust_info
         WHERE cst_id != 0
     ) t WHERE t.flag_last = 1;
-    SELECT '>> og_silver.crm_cust_info loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: crm_cust_info', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- crm_prd_info
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.crm_prd_info...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: crm_prd_info', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.crm_prd_info;
 
-    SELECT '>> Inserting into og_silver.crm_prd_info...' AS status;
     INSERT INTO og_silver.crm_prd_info (
         prd_id, cat_id, prd_key, prd_nm,
         prd_cost, prd_line, prd_start_dt, prd_end_dt
@@ -76,15 +83,19 @@ BEGIN
         CAST(cpi.prd_start_dt AS DATE),
         CAST(LEAD(cpi.prd_start_dt) OVER (PARTITION BY cpi.prd_key ORDER BY cpi.prd_start_dt) - INTERVAL 1 DAY AS DATE)
     FROM og_bronze.crm_prd_info cpi;
-    SELECT '>> og_silver.crm_prd_info loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: crm_prd_info', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- crm_sales_details
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.crm_sales_details...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: crm_sales_details', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.crm_sales_details;
 
-    SELECT '>> Inserting into og_silver.crm_sales_details...' AS status;
     INSERT INTO og_silver.crm_sales_details (
         sls_ord_num, sls_prd_key, sls_cust_id, sls_order_dt,
         sls_ship_dt, sls_due_dt, sls_sales, sls_quantity, sls_price
@@ -112,15 +123,19 @@ BEGIN
              ELSE sls_price
         END
     FROM og_bronze.crm_sales_details;
-    SELECT '>> og_silver.crm_sales_details loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: crm_sales_details', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- erp_cust_AZ12
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.erp_cust_AZ12...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: erp_cust_AZ12', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.erp_cust_AZ12;
 
-    SELECT '>> Inserting into og_silver.erp_cust_AZ12...' AS status;
     INSERT INTO og_silver.erp_cust_AZ12 (cust_id, b_date, gender)
     SELECT
         CASE WHEN cust_id LIKE 'NAS%' THEN SUBSTRING(cust_id, 4, LENGTH(cust_id))
@@ -132,15 +147,19 @@ BEGIN
              ELSE 'N/A'
         END
     FROM og_bronze.erp_cust_AZ12;
-    SELECT '>> og_silver.erp_cust_AZ12 loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: erp_cust_AZ12', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- erp_loc_A101
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.erp_loc_A101...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: erp_loc_A101', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.erp_loc_A101;
 
-    SELECT '>> Inserting into og_silver.erp_loc_A101...' AS status;
     INSERT INTO og_silver.erp_loc_A101 (cust_id, c_entry)
     SELECT
         REPLACE(TRIM(cust_id), '-', ''),
@@ -151,15 +170,19 @@ BEGIN
             ELSE REPLACE(TRIM(c_entry), '\r', '')
         END
     FROM og_bronze.erp_loc_A101;
-    SELECT '>> og_silver.erp_loc_A101 loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: erp_loc_A101', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- erp_prx_cat_G1V2
-    -- --------------------------------
-    SELECT '>> Truncating og_silver.erp_prx_cat_G1V2...' AS status;
+    -- ================================
+    SET v_step_start = NOW();
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at)
+    VALUES ('Silver Layer: erp_prx_cat_G1V2', 'Insert Start', v_step_start);
+
     TRUNCATE TABLE og_silver.erp_prx_cat_G1V2;
 
-    SELECT '>> Inserting into og_silver.erp_prx_cat_G1V2...' AS status;
     INSERT INTO og_silver.erp_prx_cat_G1V2 (id, cat, sub_cat, MAINTENANCE)
     SELECT
         id,
@@ -171,11 +194,13 @@ BEGIN
              ELSE 'N/A'
         END
     FROM og_bronze.erp_prx_cat_G1V2;
-    SELECT '>> og_silver.erp_prx_cat_G1V2 loaded successfully.' AS status;
 
-    -- --------------------------------
+    INSERT INTO og_silver.etl_process_log(process_step, status_message, created_at, end_at, duration_of_script_execution)
+    VALUES ('Silver Layer: erp_prx_cat_G1V2', 'Insert Complete', v_step_start, NOW(), TIMESTAMPDIFF(SECOND, v_step_start, NOW()));
+
+    -- ================================
     -- Wrap up
-    -- --------------------------------
+    -- ================================
     COMMIT;
     SET v_batch_end = NOW();
     SET v_duration = TIMESTAMPDIFF(SECOND, v_batch_start, v_batch_end);
